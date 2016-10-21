@@ -15,7 +15,7 @@ func TestAlgo(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	r, err := algo.Pipe(nil)
+	r, err := algo.Pipe("Author")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -27,6 +27,14 @@ func TestAlgo(t *testing.T) {
 	b, err := json.MarshalIndent(resp, "", " ")
 	if err != nil {
 		t.Fatal(err)
+	}
+
+	if r, ok := resp.Result.(string); !ok {
+		t.Fatal("string answer expected")
+	} else {
+		if r != "Hello Author" {
+			t.Fatal("wrong result")
+		}
 	}
 	fmt.Println(string(b))
 }
