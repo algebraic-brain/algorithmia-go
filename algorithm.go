@@ -70,7 +70,7 @@ func (algo *Algorithm) postRawOutput(input1 interface{}) ([]byte, error) {
 }
 
 func (algo *Algorithm) postVoidOutput(input1 interface{}) (*AsyncResponse, error) {
-	algo.QueryParameters.Add("output", "raw")
+	algo.QueryParameters.Add("output", "void")
 	resp, err := algo.Client.postJsonHelper(algo.Url, input1, algo.QueryParameters)
 	if err != nil {
 		return nil, err
