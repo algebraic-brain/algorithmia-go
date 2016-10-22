@@ -13,7 +13,7 @@ type Metadata struct {
 }
 
 func (d *Metadata) String() string {
-	return fmt.Sprint("Metadata(content_type=%v,duration=%v,stdout=%v)", d.ContentType, d.Duration, d.Stdout)
+	return fmt.Sprintf("Metadata(content_type=%v,duration=%v,stdout=%v)", d.ContentType, d.Duration, d.Stdout)
 }
 
 type AlgoResponse struct {
@@ -23,7 +23,7 @@ type AlgoResponse struct {
 }
 
 func (resp *AlgoResponse) String() string {
-	return fmt.Sprint("AlgoResponse(result=%v,metadata=%v)", resp.Result, resp.Metadata)
+	return fmt.Sprintf("AlgoResponse(result=%v,metadata=%v)", resp.Result, resp.Metadata)
 }
 
 func CreateAlgoResponse(b []byte) (*AlgoResponse, error) {

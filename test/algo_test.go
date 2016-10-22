@@ -1,7 +1,6 @@
 package test
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"testing"
@@ -19,14 +18,11 @@ func TestAlgo(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	fmt.Println("Response: ", r)
 	resp, ok := r.(*algorithmia.AlgoResponse)
 	if !ok {
 		t.Fatal("did not receive an AlgoResponse")
-	}
-
-	b, err := json.MarshalIndent(resp, "", " ")
-	if err != nil {
-		t.Fatal(err)
 	}
 
 	if r, ok := resp.Result.(string); !ok {
@@ -36,5 +32,4 @@ func TestAlgo(t *testing.T) {
 			t.Fatal("wrong result")
 		}
 	}
-	fmt.Println(string(b))
 }
