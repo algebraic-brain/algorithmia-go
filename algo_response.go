@@ -23,7 +23,7 @@ type AlgoResponse struct {
 }
 
 func (resp *AlgoResponse) String() string {
-	return fmt.Sprintf("AlgoResponse(result=%v,metadata=%v)", resp.Result, resp.Metadata)
+	return fmt.Sprintf("AlgoResponse(result=%q,metadata=%v)", resp.Result, resp.Metadata)
 }
 
 func CreateAlgoResponse(b []byte) (*AlgoResponse, error) {
