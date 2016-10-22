@@ -36,11 +36,12 @@ type AlgoOptions struct {
 
 func NewAlgorithm(client algoClient, ref string) (*Algorithm, error) {
 	path := strings.TrimSpace(ref)
+
 	if strings.HasPrefix(path, "algo:/") {
-		path = path[:len("algo:/")]
+		path = path[len("algo:/"):]
 	}
 
-	if path[0] == '/' {
+	if strings.HasPrefix(path, "/") {
 		path = path[1:]
 	}
 
