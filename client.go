@@ -30,6 +30,10 @@ func (c *Client) File(dataUrl string) *DataFile {
 	return NewDataFile(c, dataUrl)
 }
 
+func (c *Client) Dir(dataUrl string) *DataDirectory {
+	return NewDataDirectory(c, dataUrl)
+}
+
 func (c *Client) postJsonHelper(url string, input interface{}, params url.Values) (*http.Response, error) {
 	headers := http.Header{}
 	if c.ApiKey != "" {
@@ -100,4 +104,18 @@ func (c *Client) deleteHelper(url string) (*http.Response, error) {
 	}
 
 	return Request{Url: c.ApiAddress + url, Headers: headers}.Delete()
+}
+
+func (c *Client) patchHelper(url string, params map[string]interface{}) (*http.Response, error) {
+	headers := http.Header{}
+	if c.ApiKey != "" {
+		headers.Add("Authorization", c.ApiKey)
+	}
+
+	b, err := json.Marshal(params)
+	if err != nil {
+		return nil, err
+	}
+
+	return Request{Url: c.ApiAddress + url, Headers: headers, Data: b}.Get()
 }

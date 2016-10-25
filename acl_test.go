@@ -27,12 +27,6 @@ func TestAcl(t *testing.T) {
 		t.Fatal("AclTypePrivate expected, got", typ)
 	}
 
-	if typ, err := AclTypeFromResponse([]string{}); err != nil {
-		t.Fatal(err)
-	} else if typ != AclTypePrivate {
-		t.Fatal("AclTypePrivate expected, got", typ)
-	}
-
 	if typ, err := AclTypeFromResponse([]string{"algo://.my/*"}); err != nil {
 		t.Fatal(err)
 	} else if typ != AclTypeMyAlgos {

@@ -67,6 +67,14 @@ func (a *Acl) ReadAcl() AclType {
 	return a.readAcl
 }
 
+func (a *Acl) ApiParam() *AclResponse {
+	s := a.readAcl.AclString()
+	if s == "" {
+		return &AclResponse{Read: []string{}}
+	}
+	return &AclResponse{Read: []string{s}}
+}
+
 type AclResponse struct {
 	Read []string `json:"read" mapstructure:"read"`
 }

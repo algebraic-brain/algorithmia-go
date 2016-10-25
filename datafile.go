@@ -45,7 +45,7 @@ func NewDataFile(client datafileClient, dataUrl string) *DataFile {
 	return &DataFile{
 		client: client,
 		Path:   p,
-		Url:    "/v1/data/" + p,
+		Url:    getUrl(p),
 	}
 }
 
@@ -60,20 +60,6 @@ func (f *DataFile) SetAttributes(attr *FileAttributes) error {
 	return nil
 }
 
-/*
-   def getFile(self):
-       if not self.exists():
-           raise Exception('file does not exist - {}'.format(self.path))
-       # Make HTTP get request
-       response = self.client.getHelper(self.url)
-       with tempfile.NamedTemporaryFile(delete = False) as f:
-           for block in response.iter_content(1024):
-               if not block:
-                   break;
-               f.write(block)
-           f.flush()
-           return open(f.name)
-*/
 func (f *DataFile) File() (*os.File, error) {
 	if exists, err := f.Exists(); err != nil {
 		return nil, err
@@ -98,12 +84,6 @@ func (f *DataFile) File() (*os.File, error) {
 	return rf, nil
 }
 
-/*
-  def exists(self):
-      response = self.client.headHelper(self.url)
-      return (response.status_code == 200)
-
-*/
 func (f *DataFile) Exists() (bool, error) {
 	resp, err := f.client.headHelper(f.Url)
 	return resp.StatusCode == http.StatusOK, err
@@ -151,24 +131,6 @@ func (f *DataFile) Json(x interface{}) error {
 
 	return getJson(resp, x)
 }
-
-/*
-   def put(self, data):
-       # Post to data api
-
-       # First turn the data to bytes if we can
-       if isinstance(data, six.string_types) and not isinstance(data, six.binary_type):
-           data = bytes(data.encode())
-
-       if isinstance(data, six.binary_type):
-           result = self.client.putHelper(self.url, data)
-           if 'error' in result:
-               raise Exception(result['error']['message'])
-           else:
-               return self
-       else:
-           raise Exception("Must put strings or binary data. Use putJson instead")
-*/
 
 func (f *DataFile) Put(data []byte) error {
 	resp, err := f.client.putHelper(f.Url, data)
