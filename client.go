@@ -26,6 +26,10 @@ func (c *Client) Algo(ref string) (*Algorithm, error) {
 	return NewAlgorithm(c, ref)
 }
 
+func (c *Client) File(dataUrl string) *DataFile {
+	return NewDataFile(c, dataUrl)
+}
+
 func (c *Client) postJsonHelper(url string, input interface{}, params url.Values) (*http.Response, error) {
 	headers := http.Header{}
 	if c.ApiKey != "" {
@@ -60,4 +64,40 @@ func (c *Client) postJsonHelper(url string, input interface{}, params url.Values
 	}
 
 	return Request{Url: c.ApiAddress + url, Data: inputJson, Headers: headers, Params: params}.Post()
+}
+
+func (c *Client) getHelper(url string, params url.Values) (*http.Response, error) {
+	headers := http.Header{}
+	if c.ApiKey != "" {
+		headers.Add("Authorization", c.ApiKey)
+	}
+
+	return Request{Url: c.ApiAddress + url, Headers: headers, Params: params}.Get()
+}
+
+func (c *Client) headHelper(url string) (*http.Response, error) {
+	headers := http.Header{}
+	if c.ApiKey != "" {
+		headers.Add("Authorization", c.ApiKey)
+	}
+
+	return Request{Url: c.ApiAddress + url, Headers: headers}.Head()
+}
+
+func (c *Client) putHelper(url string, data []byte) (*http.Response, error) {
+	headers := http.Header{}
+	if c.ApiKey != "" {
+		headers.Add("Authorization", c.ApiKey)
+	}
+
+	return Request{Url: c.ApiAddress + url, Headers: headers, Data: data}.Put()
+}
+
+func (c *Client) deleteHelper(url string) (*http.Response, error) {
+	headers := http.Header{}
+	if c.ApiKey != "" {
+		headers.Add("Authorization", c.ApiKey)
+	}
+
+	return Request{Url: c.ApiAddress + url, Headers: headers}.Delete()
 }

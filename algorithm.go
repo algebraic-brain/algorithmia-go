@@ -20,7 +20,7 @@ type algoClient interface {
 }
 
 type Algorithm struct {
-	Client          algoClient
+	client          algoClient
 	Path            string
 	Url             string
 	QueryParameters url.Values
@@ -46,7 +46,7 @@ func NewAlgorithm(client algoClient, ref string) (*Algorithm, error) {
 	}
 
 	return &Algorithm{
-		Client:          client,
+		client:          client,
 		Path:            path,
 		Url:             "/v1/algo/" + path,
 		QueryParameters: url.Values{},
@@ -62,7 +62,7 @@ func (algo *Algorithm) SetOptions(opt AlgoOptions) {
 
 func (algo *Algorithm) postRawOutput(input1 interface{}) ([]byte, error) {
 	algo.QueryParameters.Add("output", "raw")
-	resp, err := algo.Client.postJsonHelper(algo.Url, input1, algo.QueryParameters)
+	resp, err := algo.client.postJsonHelper(algo.Url, input1, algo.QueryParameters)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func (algo *Algorithm) postRawOutput(input1 interface{}) ([]byte, error) {
 
 func (algo *Algorithm) postVoidOutput(input1 interface{}) (*AsyncResponse, error) {
 	algo.QueryParameters.Add("output", "void")
-	resp, err := algo.Client.postJsonHelper(algo.Url, input1, algo.QueryParameters)
+	resp, err := algo.client.postJsonHelper(algo.Url, input1, algo.QueryParameters)
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +87,7 @@ func (algo *Algorithm) Pipe(input1 interface{}) (interface{}, error) {
 	case Void:
 		return algo.postVoidOutput(input1)
 	default:
-		resp, err := algo.Client.postJsonHelper(algo.Url, input1, algo.QueryParameters)
+		resp, err := algo.client.postJsonHelper(algo.Url, input1, algo.QueryParameters)
 		if err != nil {
 			return nil, err
 		}
