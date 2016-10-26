@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/mitchellh/mapstructure"
 )
 
 func getUrl(p string) string {
@@ -115,4 +117,45 @@ func (f *DataDirectory) File(name string) *DataFile {
 
 func (f *DataDirectory) Dir(name string) *DataDirectory {
 	return NewDataDirectory(f.client.(*Client), PathJoin(f.Path, name))
+}
+
+func (f *DataDirectory) Permissions() (*Acl, error) {
+	v := url.Values{}
+	v.Add("acl", "true")
+	resp, err := f.client.getHelper(f.Url, v)
+	if err != nil {
+		return nil, err
+	}
+	var m map[string]interface{}
+	err = getJson(resp, &m)
+	if err != nil {
+		return nil, err
+	}
+	if aclr, ok := m["acl"]; ok {
+		var aclResp AclResponse
+		if err := mapstructure.Decode(aclr, &aclResp); err == nil {
+			return AclFromResponse(&aclResp)
+		} else {
+			return nil, err
+		}
+	}
+	return nil, nil
+}
+
+func (f *DataDirectory) UpdatePermissions(acl *Acl) error {
+	params := map[string]interface{}{
+		"acl": acl.ApiParam(),
+	}
+	resp, err := f.client.patchHelper(f.Url, params)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusOK {
+		b, err := getRaw(resp)
+		if err != nil {
+			return err
+		}
+		return ErrorFromJsonData(b)
+	}
+	return nil
 }
