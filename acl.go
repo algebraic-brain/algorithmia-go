@@ -67,25 +67,25 @@ func (a *Acl) ReadAcl() AclType {
 	return a.readAcl
 }
 
-func (a *Acl) ApiParam() *AclResponse {
+func (a *Acl) apiParam() *aclResponse {
 	s := a.readAcl.AclString()
 	if s == "" {
-		return &AclResponse{Read: []string{}}
+		return &aclResponse{Read: []string{}}
 	}
-	return &AclResponse{Read: []string{s}}
+	return &aclResponse{Read: []string{s}}
 }
 
-type AclResponse struct {
+type aclResponse struct {
 	Read []string `json:"read" mapstructure:"read"`
 }
 
-func (a *AclResponse) String() string {
+func (a *aclResponse) String() string {
 	return fmt.Sprintf("AclResponse(read=%v)", a.Read)
 }
 
 var NoAclProvided = errors.New("Response does not contain read ACL")
 
-func AclFromResponse(resp *AclResponse) (*Acl, error) {
+func aclFromResponse(resp *aclResponse) (*Acl, error) {
 	if resp.Read != nil {
 		t, err := AclTypeFromResponse(resp.Read)
 		if err != nil {

@@ -64,7 +64,7 @@ func (f *DataDirectory) Create(acl *Acl) error {
 		"name": name,
 	}
 	if acl != nil {
-		jso["acl"] = acl.ApiParam()
+		jso["acl"] = acl.apiParam()
 	}
 
 	resp, err := f.client.postJsonHelper(getUrl(parent), jso, nil)
@@ -99,7 +99,7 @@ func (f *DataDirectory) doDelete(force bool) error {
 		return err
 	}
 
-	err = ErrorFromJsonData(b)
+	err = errorFromJsonData(b)
 	if err != nil {
 		return err
 	}
@@ -136,9 +136,9 @@ func (f *DataDirectory) Permissions() (*Acl, error) {
 		return nil, err
 	}
 	if aclr, ok := m["acl"]; ok {
-		var aclResp AclResponse
+		var aclResp aclResponse
 		if err := mapstructure.Decode(aclr, &aclResp); err == nil {
-			acl, err := AclFromResponse(&aclResp)
+			acl, err := aclFromResponse(&aclResp)
 			return acl, err
 		} else {
 			return nil, err
@@ -149,14 +149,14 @@ func (f *DataDirectory) Permissions() (*Acl, error) {
 
 func (f *DataDirectory) UpdatePermissions(acl *Acl) error {
 	params := map[string]interface{}{
-		"acl": acl.ApiParam(),
+		"acl": acl.apiParam(),
 	}
 	resp, err := f.client.patchHelper(f.Url, params)
 	if err != nil {
 		return err
 	}
 	if resp.StatusCode != http.StatusOK {
-		return ErrorFromResponse(resp)
+		return errorFromResponse(resp)
 	}
 	return nil
 }
@@ -191,7 +191,7 @@ func (f *DataDirectory) subObjects(filter DataObject) <-chan SubobjectResult {
 			}
 
 			if resp.StatusCode != http.StatusOK {
-				ch <- SubobjectResult{nil, ErrorFromResponse(resp)}
+				ch <- SubobjectResult{nil, errorFromResponse(resp)}
 				return
 			}
 

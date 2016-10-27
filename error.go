@@ -16,7 +16,7 @@ func (e *Err) Error() string {
 	return e.Message
 }
 
-func ErrFromJsonData(data []byte) (*Err, error) {
+func errFromJsonData(data []byte) (*Err, error) {
 	var m map[string]interface{}
 	if err := json.Unmarshal(data, &m); err != nil {
 		return nil, err
@@ -33,8 +33,8 @@ func ErrFromJsonData(data []byte) (*Err, error) {
 	return nil, nil
 }
 
-func ErrorFromJsonData(data []byte) error {
-	e1, e2 := ErrFromJsonData(data)
+func errorFromJsonData(data []byte) error {
+	e1, e2 := errFromJsonData(data)
 	if e2 != nil {
 		return e2
 	}
@@ -44,10 +44,10 @@ func ErrorFromJsonData(data []byte) error {
 	return nil
 }
 
-func ErrorFromResponse(resp *http.Response) error {
+func errorFromResponse(resp *http.Response) error {
 	b, err := getRaw(resp)
 	if err != nil {
 		return err
 	}
-	return ErrorFromJsonData(b)
+	return errorFromJsonData(b)
 }

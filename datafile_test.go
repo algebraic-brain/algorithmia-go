@@ -30,7 +30,7 @@ func TestDataFileSetAttributes(t *testing.T) {
 func TestReadingErrorMessage(t *testing.T) {
 	msg1 := []byte(`{"error":{"message":"everything is lost"}}`)
 
-	e1, e2 := ErrFromJsonData(msg1)
+	e1, e2 := errFromJsonData(msg1)
 	if e2 != nil {
 		t.Fatal(e2)
 	}

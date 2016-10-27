@@ -139,7 +139,7 @@ func (f *DataFile) Put(data []byte) error {
 		return err
 	}
 
-	err = ErrorFromJsonData(b)
+	err = errorFromJsonData(b)
 	if err != nil {
 		return err
 	}
@@ -169,7 +169,7 @@ func (f *DataFile) Delete() error {
 		return err
 	}
 
-	if err := ErrorFromResponse(resp); err != nil {
+	if err := errorFromResponse(resp); err != nil {
 		return err
 	}
 
