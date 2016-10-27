@@ -7,7 +7,7 @@ import (
 	algorithmia "github.com/algebraic-brain/algorithmia-go"
 )
 
-var client = algorithmia.NewClient(os.Getenv("ALGORITHMIA_API_KEY"), "")
+var client2 = algorithmia.NewClient(os.Getenv("ALGORITHMIA_API_KEY"), "")
 
 type some interface{}
 
@@ -46,7 +46,7 @@ func checkFileNotExists(f *algorithmia.DataFile, onError func(err some)) {
 func TestAcl(t *testing.T) {
 	const myPath = "data://.my/privatePermissions"
 
-	dd := client.Dir(myPath)
+	dd := client2.Dir(myPath)
 	defer dd.ForceDelete()
 
 	if exists, err := dd.Exists(); err != nil {
@@ -61,7 +61,7 @@ func TestAcl(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	perms, err := client.Dir(myPath).Permissions()
+	perms, err := client2.Dir(myPath).Permissions()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -75,7 +75,7 @@ func TestAcl(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	perms, err = client.Dir(myPath).Permissions()
+	perms, err = client2.Dir(myPath).Permissions()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -86,7 +86,7 @@ func TestAcl(t *testing.T) {
 }
 
 func TestDirName(t *testing.T) {
-	dd := client.Dir("data://.my/this/is/a/long/path")
+	dd := client2.Dir("data://.my/this/is/a/long/path")
 	n, err := dd.Name()
 	if err != nil {
 		t.Fatal(err)
@@ -97,7 +97,7 @@ func TestDirName(t *testing.T) {
 }
 
 func TestDirDoesNotExist(t *testing.T) {
-	dd := client.Dir("data://.my/this_should_never_be_created")
+	dd := client2.Dir("data://.my/this_should_never_be_created")
 
 	checkDirNotExists(dd, func(err some) {
 		t.Fatal(err)
@@ -105,7 +105,7 @@ func TestDirDoesNotExist(t *testing.T) {
 }
 
 func TestEmptyDirectoryCreationAndDeletion(t *testing.T) {
-	dd := client.Dir("data://.my/empty_test_directory")
+	dd := client2.Dir("data://.my/empty_test_directory")
 
 	if exists, err := dd.Exists(); err != nil {
 		t.Fatal(err)
@@ -138,7 +138,7 @@ func TestEmptyDirectoryCreationAndDeletion(t *testing.T) {
 }
 
 func TestNonemptyDirectoryCreationAndDeletion(t *testing.T) {
-	dd := client.Dir("data://.my/nonempty_test_directory")
+	dd := client2.Dir("data://.my/nonempty_test_directory")
 
 	if exists, err := dd.Exists(); err != nil {
 		t.Fatal(err)
@@ -197,7 +197,7 @@ func TestNonemptyDirectoryCreationAndDeletion(t *testing.T) {
 }
 
 func listFilesSmall(t *testing.T, collectionName string) {
-	dd := client.Dir(collectionName)
+	dd := client2.Dir(collectionName)
 
 	if exists, err := dd.Exists(); err != nil {
 		t.Fatal(err)
@@ -261,9 +261,9 @@ func TestListFilesSmallWithTrailingSlash(t *testing.T) {
 }
 
 func TestListFolders(t *testing.T) {
-	dd := client.Dir("data://.my/")
+	dd := client2.Dir("data://.my/")
 	dirName := ".my/test_list_directory"
-	testDir := client.Dir("data://" + dirName)
+	testDir := client2.Dir("data://" + dirName)
 
 	if exists, err := testDir.Exists(); err != nil {
 		t.Fatal(err)
@@ -308,7 +308,7 @@ func TestListFolders(t *testing.T) {
 }
 
 func TestDataObject(t *testing.T) {
-	d := client.Dir("data://foo")
+	d := client2.Dir("data://foo")
 	if !d.IsDir() {
 		t.Fatal("object expected to be a directory")
 	}

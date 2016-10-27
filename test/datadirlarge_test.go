@@ -9,14 +9,14 @@ import (
 	algorithmia "github.com/algebraic-brain/algorithmia-go"
 )
 
-var client = algorithmia.NewClient(os.Getenv("ALGORITHMIA_API_KEY"), "")
+var client1 = algorithmia.NewClient(os.Getenv("ALGORITHMIA_API_KEY"), "")
 
 func TestListFilesWithPaging(t *testing.T) {
 	const (
 		NUM_FILES = 1100
 		EXTENSION = ".txt"
 	)
-	dd := client.Dir("data://.my/golangLargeDataDirList")
+	dd := client1.Dir("data://.my/golangLargeDataDirList")
 	if exists, err := dd.Exists(); err != nil {
 		t.Fatal(err)
 	} else if !exists {
