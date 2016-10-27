@@ -56,6 +56,7 @@ func (f *DataFile) SetAttributes(attr *FileAttributes) error {
 	return nil
 }
 
+//Get file from the data api
 func (f *DataFile) File() (*os.File, error) {
 	if exists, err := f.Exists(); err != nil {
 		return nil, err
@@ -128,6 +129,7 @@ func (f *DataFile) Json(x interface{}) error {
 	return getJson(resp, x)
 }
 
+//Post to data api
 func (f *DataFile) Put(data []byte) error {
 	resp, err := f.client.putHelper(f.Url, data)
 	if err != nil {
@@ -147,6 +149,7 @@ func (f *DataFile) Put(data []byte) error {
 	return nil
 }
 
+//Post json to data api
 func (f *DataFile) PutJson(data interface{}) error {
 	b, err := json.Marshal(data)
 	if err != nil {
@@ -155,6 +158,7 @@ func (f *DataFile) PutJson(data interface{}) error {
 	return f.Put(b)
 }
 
+//Post file to data api
 func (f *DataFile) PutFile(fpath string) error {
 	b, err := ioutil.ReadFile(fpath)
 	if err != nil {
@@ -163,6 +167,7 @@ func (f *DataFile) PutFile(fpath string) error {
 	return f.Put(b)
 }
 
+//Delete from data api
 func (f *DataFile) Delete() error {
 	resp, err := f.client.deleteHelper(f.Url)
 	if err != nil {

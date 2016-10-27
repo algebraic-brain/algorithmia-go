@@ -1,3 +1,4 @@
+//Algorithmia API Client (Go)
 package algorithmia
 
 import (

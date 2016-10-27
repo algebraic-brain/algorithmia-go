@@ -55,6 +55,7 @@ func (f *DataDirectory) Name() (string, error) {
 	return name, err
 }
 
+//Creates a directory, optionally include non-nil Acl argument to set permissions
 func (f *DataDirectory) Create(acl *Acl) error {
 	parent, name, err := getParentAndBase(f.Path)
 	if err != nil {
@@ -107,10 +108,12 @@ func (f *DataDirectory) doDelete(force bool) error {
 	return nil
 }
 
+// Delete directory if it's empty
 func (f *DataDirectory) Delete() error {
 	return f.doDelete(false)
 }
 
+// Forcibly delete directory (even non-empty)
 func (f *DataDirectory) ForceDelete() error {
 	return f.doDelete(true)
 }
@@ -123,6 +126,9 @@ func (f *DataDirectory) Dir(name string) *DataDirectory {
 	return NewDataDirectory(f.client, PathJoin(f.Path, name))
 }
 
+/* Returns permissions for this directory or None if it's a special collection such as
+   .session or .algo
+*/
 func (f *DataDirectory) Permissions() (*Acl, error) {
 	v := url.Values{}
 	v.Add("acl", "true")

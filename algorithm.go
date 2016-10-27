@@ -76,6 +76,7 @@ func (algo *Algorithm) postVoidOutput(input1 interface{}) (*AsyncResponse, error
 	return getAsyncResp(resp)
 }
 
+//Pipe an input into this algorithm
 func (algo *Algorithm) Pipe(input1 interface{}) (interface{}, error) {
 	switch algo.OutputType {
 	case Raw:

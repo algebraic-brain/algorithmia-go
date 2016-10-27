@@ -4,6 +4,7 @@ import (
 	"fmt"
 )
 
+//Response from the API for an asynchronous request (output=void)
 type AsyncResponse struct {
 	AsyncProtocol string `json:"async_protocol"`
 	RequestId     string `json:"request_id"`
