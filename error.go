@@ -2,6 +2,7 @@ package algorithmia
 
 import (
 	"encoding/json"
+	"net/http"
 
 	"github.com/mitchellh/mapstructure"
 )
@@ -41,4 +42,12 @@ func ErrorFromJsonData(data []byte) error {
 		return e1
 	}
 	return nil
+}
+
+func ErrorFromResponse(resp *http.Response) error {
+	b, err := getRaw(resp)
+	if err != nil {
+		return err
+	}
+	return ErrorFromJsonData(b)
 }

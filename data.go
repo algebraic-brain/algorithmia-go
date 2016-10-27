@@ -1,16 +1,28 @@
 package algorithmia
 
-type DataObject int
+type DataObjectType int
 
 const (
-	File DataObject = iota
+	File DataObjectType = iota
 	Directory
 )
 
-func (obj DataObject) IsFile() bool {
+const DataObjectNone DataObjectType = -1
+
+func (obj DataObjectType) IsFile() bool {
 	return obj == File
 }
 
-func (obj DataObject) IsDir() bool {
+func (obj DataObjectType) IsDir() bool {
 	return obj == Directory
+}
+
+func (obj DataObjectType) Type() DataObjectType {
+	return obj
+}
+
+type DataObject interface {
+	IsFile() bool
+	IsDir() bool
+	Type() DataObjectType
 }

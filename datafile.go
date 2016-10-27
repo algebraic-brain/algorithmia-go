@@ -27,12 +27,14 @@ type FileAttributes struct {
 }
 
 type DataFile struct {
-	client datafileClient
+	DataObjectType
 
 	Path         string
 	Url          string
 	LastModified time.Time
 	Size         int64
+
+	client datafileClient
 }
 
 func NewDataFile(client datafileClient, dataUrl string) *DataFile {
@@ -43,9 +45,10 @@ func NewDataFile(client datafileClient, dataUrl string) *DataFile {
 		p = p[1:]
 	}
 	return &DataFile{
-		client: client,
-		Path:   p,
-		Url:    getUrl(p),
+		DataObjectType: File,
+		client:         client,
+		Path:           p,
+		Url:            getUrl(p),
 	}
 }
 
@@ -173,13 +176,7 @@ func (f *DataFile) Delete() error {
 		return err
 	}
 
-	b, err := getRaw(resp)
-	if err != nil {
-		return err
-	}
-
-	err = ErrorFromJsonData(b)
-	if err != nil {
+	if err := ErrorFromResponse(resp); err != nil {
 		return err
 	}
 

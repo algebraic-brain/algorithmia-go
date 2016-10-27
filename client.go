@@ -108,6 +108,7 @@ func (c *Client) deleteHelper(url string) (*http.Response, error) {
 
 func (c *Client) patchHelper(url string, params map[string]interface{}) (*http.Response, error) {
 	headers := http.Header{}
+	headers.Add("content-type", "application/json")
 	if c.ApiKey != "" {
 		headers.Add("Authorization", c.ApiKey)
 	}
@@ -117,5 +118,5 @@ func (c *Client) patchHelper(url string, params map[string]interface{}) (*http.R
 		return nil, err
 	}
 
-	return Request{Url: c.ApiAddress + url, Headers: headers, Data: b}.Get()
+	return Request{Url: c.ApiAddress + url, Headers: headers, Data: b}.Patch()
 }
