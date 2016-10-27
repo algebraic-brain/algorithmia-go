@@ -161,7 +161,7 @@ func (f *DataDirectory) UpdatePermissions(acl *Acl) error {
 	return nil
 }
 
-type ContentResponse struct {
+type contentResponse struct {
 	Marker  string            `json:"marker" mapstructure:"marker"`
 	Files   []*FileAttributes `json:"files"  mapstructure:"files"`
 	Folders []*DirAttributes  `json:"folders"  mapstructure:"folders"`
@@ -195,7 +195,7 @@ func (f *DataDirectory) subObjects(filter DataObject) <-chan SubobjectResult {
 				return
 			}
 
-			var content ContentResponse
+			var content contentResponse
 			if err := getJson(resp, &content); err != nil {
 				ch <- SubobjectResult{nil, err}
 				return

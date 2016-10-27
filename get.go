@@ -49,5 +49,5 @@ func getAlgoResp(r *http.Response) (*AlgoResponse, error) {
 		return nil, err
 	}
 
-	return CreateAlgoResponse(b)
+	return createAlgoResponse(b)
 }

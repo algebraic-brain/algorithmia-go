@@ -47,7 +47,7 @@ var aclMap = map[string]AclType{
 	AclTypePrivate.AclString(): AclTypePrivate,
 }
 
-func AclTypeFromResponse(aclList []string) (AclType, error) {
+func aclTypeFromResponse(aclList []string) (AclType, error) {
 	if aclList == nil || len(aclList) == 0 {
 		return AclTypePrivate, nil
 	}
@@ -87,7 +87,7 @@ var NoAclProvided = errors.New("Response does not contain read ACL")
 
 func aclFromResponse(resp *aclResponse) (*Acl, error) {
 	if resp.Read != nil {
-		t, err := AclTypeFromResponse(resp.Read)
+		t, err := aclTypeFromResponse(resp.Read)
 		if err != nil {
 			return nil, err
 		}

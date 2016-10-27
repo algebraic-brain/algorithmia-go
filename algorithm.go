@@ -2,7 +2,6 @@ package algorithmia
 
 import (
 	"fmt"
-	"net/http"
 	"net/url"
 	"strings"
 )
@@ -15,12 +14,9 @@ const (
 	Void
 )
 
-type algoClient interface {
-	postJsonHelper(url string, input interface{}, params url.Values) (*http.Response, error)
-}
-
 type Algorithm struct {
-	client          algoClient
+	client *Client
+
 	Path            string
 	Url             string
 	QueryParameters url.Values
@@ -34,7 +30,7 @@ type AlgoOptions struct {
 	QueryParameters url.Values
 }
 
-func NewAlgorithm(client algoClient, ref string) (*Algorithm, error) {
+func NewAlgorithm(client *Client, ref string) (*Algorithm, error) {
 	path := strings.TrimSpace(ref)
 
 	if strings.HasPrefix(path, "algo:/") {

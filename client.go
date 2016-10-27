@@ -67,7 +67,7 @@ func (c *Client) postJsonHelper(url string, input interface{}, params url.Values
 		}
 	}
 
-	return Request{Url: c.ApiAddress + url, Data: inputJson, Headers: headers, Params: params}.Post()
+	return request{Url: c.ApiAddress + url, Data: inputJson, Headers: headers, Params: params}.post()
 }
 
 func (c *Client) getHelper(url string, params url.Values) (*http.Response, error) {
@@ -76,7 +76,7 @@ func (c *Client) getHelper(url string, params url.Values) (*http.Response, error
 		headers.Add("Authorization", c.ApiKey)
 	}
 
-	return Request{Url: c.ApiAddress + url, Headers: headers, Params: params}.Get()
+	return request{Url: c.ApiAddress + url, Headers: headers, Params: params}.get()
 }
 
 func (c *Client) headHelper(url string) (*http.Response, error) {
@@ -85,7 +85,7 @@ func (c *Client) headHelper(url string) (*http.Response, error) {
 		headers.Add("Authorization", c.ApiKey)
 	}
 
-	return Request{Url: c.ApiAddress + url, Headers: headers}.Head()
+	return request{Url: c.ApiAddress + url, Headers: headers}.head()
 }
 
 func (c *Client) putHelper(url string, data []byte) (*http.Response, error) {
@@ -94,7 +94,7 @@ func (c *Client) putHelper(url string, data []byte) (*http.Response, error) {
 		headers.Add("Authorization", c.ApiKey)
 	}
 
-	return Request{Url: c.ApiAddress + url, Headers: headers, Data: data}.Put()
+	return request{Url: c.ApiAddress + url, Headers: headers, Data: data}.put()
 }
 
 func (c *Client) deleteHelper(url string) (*http.Response, error) {
@@ -103,7 +103,7 @@ func (c *Client) deleteHelper(url string) (*http.Response, error) {
 		headers.Add("Authorization", c.ApiKey)
 	}
 
-	return Request{Url: c.ApiAddress + url, Headers: headers}.Delete()
+	return request{Url: c.ApiAddress + url, Headers: headers}.delete()
 }
 
 func (c *Client) patchHelper(url string, params map[string]interface{}) (*http.Response, error) {
@@ -118,5 +118,5 @@ func (c *Client) patchHelper(url string, params map[string]interface{}) (*http.R
 		return nil, err
 	}
 
-	return Request{Url: c.ApiAddress + url, Headers: headers, Data: b}.Patch()
+	return request{Url: c.ApiAddress + url, Headers: headers, Data: b}.patch()
 }

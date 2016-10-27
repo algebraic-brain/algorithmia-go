@@ -7,14 +7,14 @@ import (
 	"net/url"
 )
 
-type Request struct {
+type request struct {
 	Url     string
 	Headers http.Header
 	Params  url.Values
 	Data    []byte
 }
 
-func (req Request) url() (string, error) {
+func (req request) url() (string, error) {
 	u, err := url.Parse(req.Url)
 
 	if err != nil {
@@ -28,7 +28,7 @@ func (req Request) url() (string, error) {
 	return u.String(), nil
 }
 
-func (req Request) mkReq(method string, canData bool) (*http.Request, error) {
+func (req request) mkReq(method string, canData bool) (*http.Request, error) {
 	u, err := req.url()
 	if err != nil {
 		return nil, err
@@ -58,7 +58,7 @@ func (req Request) mkReq(method string, canData bool) (*http.Request, error) {
 	return r, nil
 }
 
-func (req Request) Get() (*http.Response, error) {
+func (req request) get() (*http.Response, error) {
 	r, err := req.mkReq("GET", false)
 	if err != nil {
 		return nil, err
@@ -66,7 +66,7 @@ func (req Request) Get() (*http.Response, error) {
 	return (&http.Client{}).Do(r)
 }
 
-func (req Request) Post() (*http.Response, error) {
+func (req request) post() (*http.Response, error) {
 	r, err := req.mkReq("POST", true)
 	if err != nil {
 		return nil, err
@@ -74,7 +74,7 @@ func (req Request) Post() (*http.Response, error) {
 	return (&http.Client{}).Do(r)
 }
 
-func (req Request) Head() (*http.Response, error) {
+func (req request) head() (*http.Response, error) {
 	r, err := req.mkReq("HEAD", false)
 	if err != nil {
 		return nil, err
@@ -82,7 +82,7 @@ func (req Request) Head() (*http.Response, error) {
 	return (&http.Client{}).Do(r)
 }
 
-func (req Request) Put() (*http.Response, error) {
+func (req request) put() (*http.Response, error) {
 	r, err := req.mkReq("PUT", true)
 	if err != nil {
 		return nil, err
@@ -90,7 +90,7 @@ func (req Request) Put() (*http.Response, error) {
 	return (&http.Client{}).Do(r)
 }
 
-func (req Request) Delete() (*http.Response, error) {
+func (req request) delete() (*http.Response, error) {
 	r, err := req.mkReq("DELETE", false)
 	if err != nil {
 		return nil, err
@@ -98,7 +98,7 @@ func (req Request) Delete() (*http.Response, error) {
 	return (&http.Client{}).Do(r)
 }
 
-func (req Request) Patch() (*http.Response, error) {
+func (req request) patch() (*http.Response, error) {
 	r, err := req.mkReq("PATCH", true)
 	if err != nil {
 		return nil, err

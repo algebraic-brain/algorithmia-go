@@ -21,19 +21,19 @@ func TestAcl(t *testing.T) {
 		t.Fatal(int(AclTypeDefault), AclTypeMyAlgos.AclString()+" expected, got", s)
 	}
 
-	if typ, err := AclTypeFromResponse([]string{}); err != nil {
+	if typ, err := aclTypeFromResponse([]string{}); err != nil {
 		t.Fatal(err)
 	} else if typ != AclTypePrivate {
 		t.Fatal("AclTypePrivate expected, got", typ)
 	}
 
-	if typ, err := AclTypeFromResponse([]string{"algo://.my/*"}); err != nil {
+	if typ, err := aclTypeFromResponse([]string{"algo://.my/*"}); err != nil {
 		t.Fatal(err)
 	} else if typ != AclTypeMyAlgos {
 		t.Fatal("AclTypeMyAlgos expected, got", typ)
 	}
 
-	if typ, err := AclTypeFromResponse([]string{"user://*"}); err != nil {
+	if typ, err := aclTypeFromResponse([]string{"user://*"}); err != nil {
 		t.Fatal(err)
 	} else if typ != AclTypePublic {
 		t.Fatal("AclTypePublic expected, got", typ)

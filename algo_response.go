@@ -26,7 +26,7 @@ func (resp *AlgoResponse) String() string {
 	return fmt.Sprintf("AlgoResponse(result=%q,metadata=%v)", resp.Result, resp.Metadata)
 }
 
-func CreateAlgoResponse(b []byte) (*AlgoResponse, error) {
+func createAlgoResponse(b []byte) (*AlgoResponse, error) {
 	var resp AlgoResponse
 
 	if err := json.Unmarshal(b, &resp); err != nil {
