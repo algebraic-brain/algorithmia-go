@@ -13,13 +13,6 @@ import (
 	"time"
 )
 
-type datafileClient interface {
-	getHelper(url string, params url.Values) (*http.Response, error)
-	headHelper(url string) (*http.Response, error)
-	putHelper(url string, data []byte) (*http.Response, error)
-	deleteHelper(url string) (*http.Response, error)
-}
-
 type FileAttributes struct {
 	FileName     string `json:"filename"`
 	LastModified string `json:"last_modified"`
@@ -34,10 +27,10 @@ type DataFile struct {
 	LastModified time.Time
 	Size         int64
 
-	client datafileClient
+	client *Client
 }
 
-func NewDataFile(client datafileClient, dataUrl string) *DataFile {
+func NewDataFile(client *Client, dataUrl string) *DataFile {
 	p := strings.TrimSpace(dataUrl)
 	if strings.HasPrefix(p, "data://") {
 		p = p[len("data://"):]

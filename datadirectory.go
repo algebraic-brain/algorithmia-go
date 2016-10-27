@@ -13,13 +13,6 @@ func getUrl(p string) string {
 	return "/v1/data/" + p
 }
 
-type datadirClient interface {
-	getHelper(url string, params url.Values) (*http.Response, error)
-	postJsonHelper(url string, input interface{}, params url.Values) (*http.Response, error)
-	deleteHelper(url string) (*http.Response, error)
-	patchHelper(url string, params map[string]interface{}) (*http.Response, error)
-}
-
 type DirAttributes struct {
 	Name string `json:"name" mapstructure:"name"`
 }
@@ -30,10 +23,10 @@ type DataDirectory struct {
 	Path string
 	Url  string
 
-	client datadirClient
+	client *Client
 }
 
-func NewDataDirectory(client datadirClient, dataUrl string) *DataDirectory {
+func NewDataDirectory(client *Client, dataUrl string) *DataDirectory {
 	p := strings.TrimSpace(dataUrl)
 	if strings.HasPrefix(p, "data://") {
 		p = p[len("data://"):]
@@ -123,11 +116,11 @@ func (f *DataDirectory) ForceDelete() error {
 }
 
 func (f *DataDirectory) File(name string) *DataFile {
-	return NewDataFile(f.client.(*Client), PathJoin(f.Path, name))
+	return NewDataFile(f.client, PathJoin(f.Path, name))
 }
 
 func (f *DataDirectory) Dir(name string) *DataDirectory {
-	return NewDataDirectory(f.client.(*Client), PathJoin(f.Path, name))
+	return NewDataDirectory(f.client, PathJoin(f.Path, name))
 }
 
 func (f *DataDirectory) Permissions() (*Acl, error) {
@@ -215,7 +208,7 @@ func (f *DataDirectory) subObjects(filter DataObject) <-chan SubobjectResult {
 					return
 				}
 				for _, fa := range content.Files {
-					file := NewDataFile(f.client.(*Client), PathJoin(f.Path, fa.FileName))
+					file := NewDataFile(f.client, PathJoin(f.Path, fa.FileName))
 					file.SetAttributes(fa)
 					ch <- SubobjectResult{file, nil}
 				}
