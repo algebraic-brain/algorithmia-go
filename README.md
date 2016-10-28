@@ -35,8 +35,8 @@ so consult the algorithm's description for usage examples specific to that algor
 
 ### Text input/output
 
-Call an algorithm with text input by simply passing a string into its `pipe` method.
-If the algorithm output is text, then the `result` field of the response will be a string.
+Call an algorithm with text input by simply passing a string into its `Pipe` method.
+If the algorithm output is text, then the `Result` field of the response will be a string.
 
 ```Go
 	algo, _ := client.Algo("demo/Hello/0.1.1")
