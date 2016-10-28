@@ -14,8 +14,14 @@ var InvalidPath = errors.New("Invalid path")
 func getParentAndBase(p string) (string, string, error) {
 	var parent, base string
 	if parts := prefixRe.FindStringSubmatch(p); parts == nil {
-		parent, base = path.Split(p)
-		if base == "" {
+		var stripped string
+		if strings.HasSuffix(p, "/") {
+			stripped = p[:len(p)-1]
+		} else {
+			stripped = p
+		}
+		parent, base = path.Split(stripped)
+		if parent == "" {
 			return "", "", InvalidPath
 		}
 		parent = strings.TrimRight(parent, "/")
