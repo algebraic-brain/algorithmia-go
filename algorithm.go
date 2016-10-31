@@ -50,10 +50,20 @@ func NewAlgorithm(client *Client, ref string) (*Algorithm, error) {
 }
 
 func (algo *Algorithm) SetOptions(opt AlgoOptions) {
-	algo.queryParameters = opt.QueryParameters
+	if opt.Timeout == 0 {
+		opt.Timeout = 300
+	}
 	algo.queryParameters.Add("timeout", fmt.Sprint(opt.Timeout))
 	algo.queryParameters.Add("stdout", fmt.Sprint(opt.Stdout)) // TODO: false? False? 0?
 	algo.outputType = opt.Output
+	if opt.QueryParameters != nil {
+		for k, v := range opt.QueryParameters {
+			for _, vv := range v {
+				algo.queryParameters.Add(k, vv)
+			}
+		}
+	}
+	debug("!!!", jsonString(algo.queryParameters))
 }
 
 func (algo *Algorithm) postRawOutput(input1 interface{}) ([]byte, error) {

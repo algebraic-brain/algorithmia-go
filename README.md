@@ -88,4 +88,16 @@ fmt.Println(err) //algorithm algo://util/whoopsWrongAlgo not found
 
 ### Request options
 
+The client exposes options that can configure algorithm requests.
+This includes support for changing the timeout or indicating that the API should include stdout in the response.
+
+```Go
+algo, _ = client.Algo("util/echo")
+algo.SetOptions(algorithmia.AlgoOptions{Timeout: 60, Stdout: false})
+```
+
+## Working with data
+The Algorithmia client also provides a way to manage both Algorithmia hosted data
+and data from Dropbox or S3 accounts that you've connected to you Algorithmia account.
+
 TODO
