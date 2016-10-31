@@ -22,10 +22,10 @@ type FileAttributes struct {
 type DataFile struct {
 	DataObjectType
 
-	Path         string
-	Url          string
-	LastModified time.Time
-	Size         int64
+	path         string
+	url          string
+	lastModified time.Time
+	size         int64
 
 	client *Client
 }
@@ -40,8 +40,8 @@ func NewDataFile(client *Client, dataUrl string) *DataFile {
 	return &DataFile{
 		DataObjectType: File,
 		client:         client,
-		Path:           p,
-		Url:            getUrl(p),
+		path:           p,
+		url:            getUrl(p),
 	}
 }
 
@@ -51,8 +51,8 @@ func (f *DataFile) SetAttributes(attr *FileAttributes) error {
 	if err != nil {
 		return err
 	}
-	f.LastModified = t
-	f.Size = attr.Size
+	f.lastModified = t
+	f.size = attr.Size
 	return nil
 }
 
@@ -61,10 +61,10 @@ func (f *DataFile) File() (*os.File, error) {
 	if exists, err := f.Exists(); err != nil {
 		return nil, err
 	} else if !exists {
-		return nil, errors.New(fmt.Sprint("file does not exist -", f.Path))
+		return nil, errors.New(fmt.Sprint("file does not exist -", f.path))
 	}
 
-	resp, err := f.client.getHelper(f.Url, url.Values{})
+	resp, err := f.client.getHelper(f.url, url.Values{})
 	if err != nil {
 		return nil, err
 	}
@@ -82,12 +82,12 @@ func (f *DataFile) File() (*os.File, error) {
 }
 
 func (f *DataFile) Exists() (bool, error) {
-	resp, err := f.client.headHelper(f.Url)
+	resp, err := f.client.headHelper(f.url)
 	return resp.StatusCode == http.StatusOK, err
 }
 
 func (f *DataFile) Name() (string, error) {
-	_, name, err := getParentAndBase(f.Path)
+	_, name, err := getParentAndBase(f.path)
 	return name, err
 }
 
@@ -95,10 +95,10 @@ func (f *DataFile) Bytes() ([]byte, error) {
 	if exists, err := f.Exists(); err != nil {
 		return nil, err
 	} else if !exists {
-		return nil, errors.New(fmt.Sprint("file does not exist -", f.Path))
+		return nil, errors.New(fmt.Sprint("file does not exist -", f.path))
 	}
 
-	resp, err := f.client.getHelper(f.Url, url.Values{})
+	resp, err := f.client.getHelper(f.url, url.Values{})
 	if err != nil {
 		return nil, err
 	}
@@ -118,10 +118,10 @@ func (f *DataFile) Json(x interface{}) error {
 	if exists, err := f.Exists(); err != nil {
 		return err
 	} else if !exists {
-		return errors.New(fmt.Sprint("file does not exist -", f.Path))
+		return errors.New(fmt.Sprint("file does not exist -", f.path))
 	}
 
-	resp, err := f.client.getHelper(f.Url, url.Values{})
+	resp, err := f.client.getHelper(f.url, url.Values{})
 	if err != nil {
 		return err
 	}
@@ -131,7 +131,7 @@ func (f *DataFile) Json(x interface{}) error {
 
 //Post to data api
 func (f *DataFile) Put(data []byte) error {
-	resp, err := f.client.putHelper(f.Url, data)
+	resp, err := f.client.putHelper(f.url, data)
 	if err != nil {
 		return err
 	}
@@ -169,7 +169,7 @@ func (f *DataFile) PutFile(fpath string) error {
 
 //Delete from data api
 func (f *DataFile) Delete() error {
-	resp, err := f.client.deleteHelper(f.Url)
+	resp, err := f.client.deleteHelper(f.url)
 	if err != nil {
 		return err
 	}
@@ -179,4 +179,20 @@ func (f *DataFile) Delete() error {
 	}
 
 	return nil
+}
+
+func (f *DataFile) Path() string {
+	return f.path
+}
+
+func (f *DataFile) Url() string {
+	return f.url
+}
+
+func (f *DataFile) LastModified() time.Time {
+	return f.lastModified
+}
+
+func (f *DataFile) Size() int64 {
+	return f.size
 }

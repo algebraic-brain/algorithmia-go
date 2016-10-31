@@ -21,7 +21,7 @@ func TestDataFileSetAttributes(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	ft := f.LastModified.Format("2006-01-02T15:04:05.000Z")
+	ft := f.LastModified().Format("2006-01-02T15:04:05.000Z")
 	if ft != "2016-01-06T00:52:34.000Z" {
 		t.Fatal("got", ft, "after Format")
 	}

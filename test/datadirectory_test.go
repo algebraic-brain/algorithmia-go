@@ -232,18 +232,18 @@ func listFilesSmall(t *testing.T, collectionName string) {
 			t.Fatal(f.Err)
 		}
 		size += 1
-		allFiles[f.Object.(*algorithmia.DataFile).Path] = true
+		allFiles[f.Object.(*algorithmia.DataFile).Path()] = true
 	}
 
 	if size != 2 {
 		t.Fatal("number of files listed should be 2")
 	}
 
-	if _, ok := allFiles[f1.Path]; !ok {
+	if _, ok := allFiles[f1.Path()]; !ok {
 		t.Fatal("file 'a' not found in collection")
 	}
 
-	if _, ok := allFiles[f2.Path]; !ok {
+	if _, ok := allFiles[f2.Path()]; !ok {
 		t.Fatal("file 'b' not found in collection")
 	}
 
@@ -278,7 +278,7 @@ func TestListFolders(t *testing.T) {
 		if f.Err != nil {
 			t.Fatal(f.Err)
 		}
-		allFolders[f.Object.(*algorithmia.DataDirectory).Path] = true
+		allFolders[f.Object.(*algorithmia.DataDirectory).Path()] = true
 	}
 
 	if _, ok := allFolders[dirName]; ok {
@@ -294,7 +294,7 @@ func TestListFolders(t *testing.T) {
 		if f.Err != nil {
 			t.Fatal(f.Err)
 		}
-		allFolders[f.Object.(*algorithmia.DataDirectory).Path] = true
+		allFolders[f.Object.(*algorithmia.DataDirectory).Path()] = true
 	}
 
 	if _, ok := allFolders[dirName]; !ok {

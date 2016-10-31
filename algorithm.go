@@ -17,10 +17,10 @@ const (
 type Algorithm struct {
 	client *Client
 
-	Path            string
-	Url             string
-	QueryParameters url.Values
-	OutputType      OutputType
+	path            string
+	url             string
+	queryParameters url.Values
+	outputType      OutputType
 }
 
 type AlgoOptions struct {
@@ -43,22 +43,22 @@ func NewAlgorithm(client *Client, ref string) (*Algorithm, error) {
 
 	return &Algorithm{
 		client:          client,
-		Path:            path,
-		Url:             "/v1/algo/" + path,
-		QueryParameters: url.Values{},
+		path:            path,
+		url:             "/v1/algo/" + path,
+		queryParameters: url.Values{},
 	}, nil
 }
 
 func (algo *Algorithm) SetOptions(opt AlgoOptions) {
-	algo.QueryParameters = opt.QueryParameters
-	algo.QueryParameters.Add("timeout", fmt.Sprint(opt.Timeout))
-	algo.QueryParameters.Add("stdout", fmt.Sprint(opt.Stdout)) // TODO: false? False? 0?
-	algo.OutputType = opt.Output
+	algo.queryParameters = opt.QueryParameters
+	algo.queryParameters.Add("timeout", fmt.Sprint(opt.Timeout))
+	algo.queryParameters.Add("stdout", fmt.Sprint(opt.Stdout)) // TODO: false? False? 0?
+	algo.outputType = opt.Output
 }
 
 func (algo *Algorithm) postRawOutput(input1 interface{}) ([]byte, error) {
-	algo.QueryParameters.Add("output", "raw")
-	resp, err := algo.client.postJsonHelper(algo.Url, input1, algo.QueryParameters)
+	algo.queryParameters.Add("output", "raw")
+	resp, err := algo.client.postJsonHelper(algo.url, input1, algo.queryParameters)
 	if err != nil {
 		return nil, err
 	}
@@ -67,8 +67,8 @@ func (algo *Algorithm) postRawOutput(input1 interface{}) ([]byte, error) {
 }
 
 func (algo *Algorithm) postVoidOutput(input1 interface{}) (*AsyncResponse, error) {
-	algo.QueryParameters.Add("output", "void")
-	resp, err := algo.client.postJsonHelper(algo.Url, input1, algo.QueryParameters)
+	algo.queryParameters.Add("output", "void")
+	resp, err := algo.client.postJsonHelper(algo.url, input1, algo.queryParameters)
 	if err != nil {
 		return nil, err
 	}
@@ -78,17 +78,25 @@ func (algo *Algorithm) postVoidOutput(input1 interface{}) (*AsyncResponse, error
 
 //Pipe an input into this algorithm
 func (algo *Algorithm) Pipe(input1 interface{}) (interface{}, error) {
-	switch algo.OutputType {
+	switch algo.outputType {
 	case Raw:
 		return algo.postRawOutput(input1)
 	case Void:
 		return algo.postVoidOutput(input1)
 	default:
-		resp, err := algo.client.postJsonHelper(algo.Url, input1, algo.QueryParameters)
+		resp, err := algo.client.postJsonHelper(algo.url, input1, algo.queryParameters)
 		if err != nil {
 			return nil, err
 		}
 
 		return getAlgoResp(resp)
 	}
+}
+
+func (algo *Algorithm) Path() string {
+	return algo.path
+}
+
+func (algo *Algorithm) Url() string {
+	return algo.url
 }

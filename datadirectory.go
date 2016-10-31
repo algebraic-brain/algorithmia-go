@@ -20,8 +20,8 @@ type DirAttributes struct {
 type DataDirectory struct {
 	DataObjectType
 
-	Path string
-	Url  string
+	path string
+	url  string
 
 	client *Client
 }
@@ -36,8 +36,8 @@ func NewDataDirectory(client *Client, dataUrl string) *DataDirectory {
 	return &DataDirectory{
 		DataObjectType: Directory,
 		client:         client,
-		Path:           p,
-		Url:            getUrl(p),
+		path:           p,
+		url:            getUrl(p),
 	}
 }
 
@@ -46,18 +46,18 @@ func (f *DataDirectory) SetAttributes(attr *DirAttributes) error {
 }
 
 func (f *DataDirectory) Exists() (bool, error) {
-	resp, err := f.client.getHelper(f.Url, url.Values{})
+	resp, err := f.client.getHelper(f.url, url.Values{})
 	return resp.StatusCode == http.StatusOK, err
 }
 
 func (f *DataDirectory) Name() (string, error) {
-	_, name, err := getParentAndBase(f.Path)
+	_, name, err := getParentAndBase(f.path)
 	return name, err
 }
 
 //Creates a directory, optionally include non-nil Acl argument to set permissions
 func (f *DataDirectory) Create(acl *Acl) error {
-	parent, name, err := getParentAndBase(f.Path)
+	parent, name, err := getParentAndBase(f.path)
 	if err != nil {
 		return err
 	}
@@ -85,7 +85,7 @@ func (f *DataDirectory) Create(acl *Acl) error {
 }
 
 func (f *DataDirectory) doDelete(force bool) error {
-	url := f.Url
+	url := f.url
 	if force {
 		url += "?force=true"
 	}
@@ -119,11 +119,11 @@ func (f *DataDirectory) ForceDelete() error {
 }
 
 func (f *DataDirectory) File(name string) *DataFile {
-	return NewDataFile(f.client, PathJoin(f.Path, name))
+	return NewDataFile(f.client, PathJoin(f.path, name))
 }
 
 func (f *DataDirectory) Dir(name string) *DataDirectory {
-	return NewDataDirectory(f.client, PathJoin(f.Path, name))
+	return NewDataDirectory(f.client, PathJoin(f.path, name))
 }
 
 /* Returns permissions for this directory or None if it's a special collection such as
@@ -132,7 +132,7 @@ func (f *DataDirectory) Dir(name string) *DataDirectory {
 func (f *DataDirectory) Permissions() (*Acl, error) {
 	v := url.Values{}
 	v.Add("acl", "true")
-	resp, err := f.client.getHelper(f.Url, v)
+	resp, err := f.client.getHelper(f.url, v)
 	if err != nil {
 		return nil, err
 	}
@@ -157,7 +157,7 @@ func (f *DataDirectory) UpdatePermissions(acl *Acl) error {
 	params := map[string]interface{}{
 		"acl": acl.apiParam(),
 	}
-	resp, err := f.client.patchHelper(f.Url, params)
+	resp, err := f.client.patchHelper(f.url, params)
 	if err != nil {
 		return err
 	}
@@ -190,7 +190,7 @@ func (f *DataDirectory) subObjects(filter DataObject) <-chan SubobjectResult {
 			if marker != "" {
 				queryParams.Add("marker", marker)
 			}
-			resp, err := f.client.getHelper(f.Url, queryParams)
+			resp, err := f.client.getHelper(f.url, queryParams)
 			if err != nil {
 				ch <- SubobjectResult{nil, err}
 				return
@@ -214,7 +214,7 @@ func (f *DataDirectory) subObjects(filter DataObject) <-chan SubobjectResult {
 					return
 				}
 				for _, fa := range content.Files {
-					file := NewDataFile(f.client, PathJoin(f.Path, fa.FileName))
+					file := NewDataFile(f.client, PathJoin(f.path, fa.FileName))
 					file.SetAttributes(fa)
 					ch <- SubobjectResult{file, nil}
 				}
@@ -224,7 +224,7 @@ func (f *DataDirectory) subObjects(filter DataObject) <-chan SubobjectResult {
 					return
 				}
 				for _, fa := range content.Folders {
-					dir := NewDataDirectory(f.client, PathJoin(f.Path, fa.Name))
+					dir := NewDataDirectory(f.client, PathJoin(f.path, fa.Name))
 					dir.SetAttributes(fa)
 					ch <- SubobjectResult{dir, nil}
 				}
@@ -255,4 +255,12 @@ func (f *DataDirectory) Dirs() <-chan SubobjectResult {
 
 func (f *DataDirectory) List() <-chan SubobjectResult {
 	return f.subObjects(DataObjectNone)
+}
+
+func (f *DataDirectory) Path() string {
+	return f.path
+}
+
+func (f *DataDirectory) Url() string {
+	return f.url
 }
