@@ -50,4 +50,17 @@ fmt.Println(response.Metadata.Duration) //0.0002127
 
 ### JSON input/output
 
+Call an algorithm with JSON input by simply passing in a type that can be serialized to JSON.
+For algorithms that return JSON, the `Result` field of the response will be the appropriate
+deserialized type.
+
+```Go
+algo, _ := client.Algo("WebPredict/ListAnagrams/0.1.0")
+resp, _ := algo.Pipe([]string{"transformer", "terraforms", "retransform"})
+response := resp.(*algorithmia.AlgoResponse)
+fmt.Println(response.Result) //[transformer retransform]
+```
+
+### Binary input/output
+
 TODO
