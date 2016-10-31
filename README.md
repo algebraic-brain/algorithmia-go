@@ -1,7 +1,8 @@
 Algorithmia Common Library (Golang)
 ===================================
 
-Golang client library for accessing the Algorithmia API
+Golang client library for accessing the Algorithmia API.
+
 For API documentation, see the [Godoc](https://godoc.org/github.com/algebraic-brain/algorithmia-go)
 
 ## Install
@@ -39,11 +40,12 @@ Call an algorithm with text input by simply passing a string into its `Pipe` met
 If the algorithm output is text, then the `Result` field of the response will be a string.
 
 ```Go
-	algo, _ := client.Algo("demo/Hello/0.1.1")
-	response, _ := algo.Pipe("Author")
-	fmt.Println(response.(*algorithmia.AlgoResponse).Result.(string))   //Hello Author
-	fmt.Println(response.(*algorithmia.AlgoResponse).Metadata)          //Metadata(content_type=text,duration=0.0002127,stdout=false)
-	fmt.Println(response.(*algorithmia.AlgoResponse).Metadata.Duration) //0.0002127
+algo, _ := client.Algo("demo/Hello/0.1.1")
+resp, _ := algo.Pipe("Author")
+response := resp.(*algorithmia.AlgoResponse)
+fmt.Println(response.Result)            //Hello Author
+fmt.Println(response.Metadata)          //Metadata(content_type='text',duration=0.0002127)
+fmt.Println(response.Metadata.Duration) //0.0002127
 ```
 
 ### JSON input/output
