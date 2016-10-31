@@ -63,7 +63,6 @@ func (algo *Algorithm) SetOptions(opt AlgoOptions) {
 			}
 		}
 	}
-	debug("!!!", jsonString(algo.queryParameters))
 }
 
 func (algo *Algorithm) postRawOutput(input1 interface{}) ([]byte, error) {
