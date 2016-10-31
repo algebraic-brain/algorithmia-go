@@ -8,17 +8,17 @@ import (
 )
 
 type Client struct {
-	ApiKey     string
-	ApiAddress string
+	apiKey     string
+	apiAddress string
 }
 
 func NewClient(apiKey, apiAddress string) *Client {
 	c := &Client{
-		ApiKey:     apiKey,
-		ApiAddress: apiAddress,
+		apiKey:     apiKey,
+		apiAddress: apiAddress,
 	}
 	if apiAddress == "" {
-		c.ApiAddress = "https://api.algorithmia.com"
+		c.apiAddress = "https://api.algorithmia.com"
 	}
 	return c
 }
@@ -37,8 +37,8 @@ func (c *Client) Dir(dataUrl string) *DataDirectory {
 
 func (c *Client) postJsonHelper(url string, input interface{}, params url.Values) (*http.Response, error) {
 	headers := http.Header{}
-	if c.ApiKey != "" {
-		headers.Add("Authorization", c.ApiKey)
+	if c.apiKey != "" {
+		headers.Add("Authorization", c.apiKey)
 	}
 
 	var (
@@ -68,50 +68,50 @@ func (c *Client) postJsonHelper(url string, input interface{}, params url.Values
 		}
 	}
 
-	return request{Url: c.ApiAddress + url, Data: inputJson, Headers: headers, Params: params}.post()
+	return request{Url: c.apiAddress + url, Data: inputJson, Headers: headers, Params: params}.post()
 }
 
 func (c *Client) getHelper(url string, params url.Values) (*http.Response, error) {
 	headers := http.Header{}
-	if c.ApiKey != "" {
-		headers.Add("Authorization", c.ApiKey)
+	if c.apiKey != "" {
+		headers.Add("Authorization", c.apiKey)
 	}
 
-	return request{Url: c.ApiAddress + url, Headers: headers, Params: params}.get()
+	return request{Url: c.apiAddress + url, Headers: headers, Params: params}.get()
 }
 
 func (c *Client) headHelper(url string) (*http.Response, error) {
 	headers := http.Header{}
-	if c.ApiKey != "" {
-		headers.Add("Authorization", c.ApiKey)
+	if c.apiKey != "" {
+		headers.Add("Authorization", c.apiKey)
 	}
 
-	return request{Url: c.ApiAddress + url, Headers: headers}.head()
+	return request{Url: c.apiAddress + url, Headers: headers}.head()
 }
 
 func (c *Client) putHelper(url string, data []byte) (*http.Response, error) {
 	headers := http.Header{}
-	if c.ApiKey != "" {
-		headers.Add("Authorization", c.ApiKey)
+	if c.apiKey != "" {
+		headers.Add("Authorization", c.apiKey)
 	}
 
-	return request{Url: c.ApiAddress + url, Headers: headers, Data: data}.put()
+	return request{Url: c.apiAddress + url, Headers: headers, Data: data}.put()
 }
 
 func (c *Client) deleteHelper(url string) (*http.Response, error) {
 	headers := http.Header{}
-	if c.ApiKey != "" {
-		headers.Add("Authorization", c.ApiKey)
+	if c.apiKey != "" {
+		headers.Add("Authorization", c.apiKey)
 	}
 
-	return request{Url: c.ApiAddress + url, Headers: headers}.delete()
+	return request{Url: c.apiAddress + url, Headers: headers}.delete()
 }
 
 func (c *Client) patchHelper(url string, params map[string]interface{}) (*http.Response, error) {
 	headers := http.Header{}
 	headers.Add("content-type", "application/json")
-	if c.ApiKey != "" {
-		headers.Add("Authorization", c.ApiKey)
+	if c.apiKey != "" {
+		headers.Add("Authorization", c.apiKey)
 	}
 
 	b, err := json.Marshal(params)
@@ -119,5 +119,5 @@ func (c *Client) patchHelper(url string, params map[string]interface{}) (*http.R
 		return nil, err
 	}
 
-	return request{Url: c.ApiAddress + url, Headers: headers, Data: b}.patch()
+	return request{Url: c.apiAddress + url, Headers: headers, Data: b}.patch()
 }

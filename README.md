@@ -63,4 +63,29 @@ fmt.Println(response.Result) //[transformer retransform]
 
 ### Binary input/output
 
+Call an algorithm with binary input by passing a byte array into the `Pipe` method.
+Similarly, if the algorithm response is binary data, then the `Result` field of the response
+will be a byte array.
+
+```Go
+input, _ := ioutil.ReadFile("/path/to/bender.png")
+algo, _ := client.Algo("opencv/SmartThumbnail/0.1")
+resp, _ := algo.Pipe(input)
+response := resp.(*algorithmia.AlgoResponse)
+ioutil.WriteFile("thumbnail.png", response.Result.([]byte), 0666)
+fmt.Println(response.Result) //[binary byte sequence]
+```
+
+### Error handling
+
+API errors and Algorithm exceptions will result in calls to `Pipe` returning an error:
+
+```Go
+algo, _ := client.Algo("util/whoopsWrongAlgo")
+_, err := algo.Pipe("Hello, World!")
+fmt.Println(err) //algorithm algo://util/whoopsWrongAlgo not found
+```
+
+### Request options
+
 TODO

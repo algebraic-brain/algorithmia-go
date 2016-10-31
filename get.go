@@ -2,7 +2,6 @@ package algorithmia
 
 import (
 	"encoding/json"
-	"errors"
 	"io/ioutil"
 	"net/http"
 )
@@ -14,7 +13,7 @@ func getRaw(r *http.Response) ([]byte, error) {
 	}
 
 	if r.StatusCode != http.StatusOK {
-		return nil, errors.New(string(b))
+		return nil, errorFromJsonData(b)
 	}
 	return b, nil
 }
