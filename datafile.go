@@ -78,7 +78,12 @@ func (f *DataFile) File() (*os.File, error) {
 		rf.Close()
 		return nil, err
 	}
-	return rf, nil
+	name := rf.Name()
+	if rf.Close(); err != nil {
+		return nil, err
+	}
+
+	return os.Open(name)
 }
 
 func (f *DataFile) Exists() (bool, error) {
@@ -130,7 +135,18 @@ func (f *DataFile) Json(x interface{}) error {
 }
 
 //Post to data api
-func (f *DataFile) Put(data []byte) error {
+func (f *DataFile) Put(data interface{}) error {
+	switch dt := data.(type) {
+	case string:
+		return f.PutBytes([]byte(dt))
+	case []byte:
+		return f.PutBytes(dt)
+	default:
+		return f.PutJson(data)
+	}
+}
+
+func (f *DataFile) PutBytes(data []byte) error {
 	resp, err := f.client.putHelper(f.url, data)
 	if err != nil {
 		return err
@@ -155,7 +171,7 @@ func (f *DataFile) PutJson(data interface{}) error {
 	if err != nil {
 		return err
 	}
-	return f.Put(b)
+	return f.PutBytes(b)
 }
 
 //Post file to data api
@@ -164,7 +180,7 @@ func (f *DataFile) PutFile(fpath string) error {
 	if err != nil {
 		return err
 	}
-	return f.Put(b)
+	return f.PutBytes(b)
 }
 
 //Delete from data api
