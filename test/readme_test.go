@@ -33,7 +33,7 @@ func Test2(t *testing.T) {
 }
 
 func Test3(t *testing.T) {
-	input, _ := ioutil.ReadFile(`C:\Users\Osman\Documents\Тимур\Практическая №3 по информатике\Пароход.png`)
+	input, _ := ioutil.ReadFile(`Пароход.png`)
 	algo, _ := client.Algo("opencv/SmartThumbnail/0.1")
 	resp, _ := algo.Pipe(input)
 	response := resp.(*algorithmia.AlgoResponse)
