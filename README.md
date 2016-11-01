@@ -5,6 +5,24 @@ Golang client library for accessing the [Algorithmia API](http://docs.algorithmi
 
 For detailed library documentation, see the [Godoc](https://godoc.org/github.com/algebraic-brain/algorithmia-go).
 
+## Table Of Contents
+  * [Install](#install)
+  * [Authentication](#authentication)
+  * [Calling algorithms](#calling-algorithms)
+    * [Text input/output](#text-inputoutput)
+    * [JSON input/output](#json-inputoutput)
+    * [Binary input/output](#binary-inputoutput)
+    * [Error handling](#error-handling)
+    * [Request options](#request-options)
+  * [Working with data](#working-with-data)
+    * [Create directories](#create-directories)
+    * [Upload files to a directory](#upload-files-to-a-directory)
+    * [Download contents of file](#download-contents-of-file)
+    * [Delete files and directories](#delete-files-and-directories)
+    * [List directory contents](#list-directory-contents)
+    * [Manage directory permissions](#manage-directory-permissions)
+  * [Running tests](#running-tests)
+
 ## Install
 
 ```bash
