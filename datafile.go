@@ -68,6 +68,7 @@ func (f *DataFile) File() (*os.File, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	rf, err := ioutil.TempFile(os.TempDir(), "algorithmia")
 	if err != nil {
@@ -88,6 +89,7 @@ func (f *DataFile) File() (*os.File, error) {
 
 func (f *DataFile) Exists() (bool, error) {
 	resp, err := f.client.headHelper(f.url)
+	defer resp.Body.Close()
 	return resp.StatusCode == http.StatusOK, err
 }
 
@@ -107,6 +109,7 @@ func (f *DataFile) Bytes() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	return ioutil.ReadAll(resp.Body)
 }
@@ -130,6 +133,7 @@ func (f *DataFile) Json(x interface{}) error {
 	if err != nil {
 		return err
 	}
+	defer resp.Body.Close()
 
 	return getJson(resp, x)
 }
@@ -151,6 +155,7 @@ func (f *DataFile) PutBytes(data []byte) error {
 	if err != nil {
 		return err
 	}
+	defer resp.Body.Close()
 
 	b, err := getRaw(resp)
 	if err != nil {
@@ -189,6 +194,7 @@ func (f *DataFile) Delete() error {
 	if err != nil {
 		return err
 	}
+	defer resp.Body.Close()
 
 	if err := errorFromResponse(resp); err != nil {
 		return err

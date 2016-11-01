@@ -71,6 +71,7 @@ func (algo *Algorithm) postRawOutput(input1 interface{}) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	return getRaw(resp)
 }
@@ -81,6 +82,7 @@ func (algo *Algorithm) postVoidOutput(input1 interface{}) (*AsyncResponse, error
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	return getAsyncResp(resp)
 }
@@ -97,6 +99,7 @@ func (algo *Algorithm) Pipe(input1 interface{}) (interface{}, error) {
 		if err != nil {
 			return nil, err
 		}
+		defer resp.Body.Close()
 
 		return getAlgoResp(resp)
 	}

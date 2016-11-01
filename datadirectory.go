@@ -47,6 +47,7 @@ func (f *DataDirectory) SetAttributes(attr *DirAttributes) error {
 
 func (f *DataDirectory) Exists() (bool, error) {
 	resp, err := f.client.getHelper(f.url, url.Values{})
+	defer resp.Body.Close()
 	return resp.StatusCode == http.StatusOK, err
 }
 
@@ -73,6 +74,7 @@ func (f *DataDirectory) Create(acl *Acl) error {
 	if err != nil {
 		return err
 	}
+	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		b, err := getRaw(resp)
@@ -94,6 +96,7 @@ func (f *DataDirectory) doDelete(force bool) error {
 	if err != nil {
 		return err
 	}
+	defer resp.Body.Close()
 
 	b, err := getRaw(resp)
 	if err != nil {
@@ -136,6 +139,7 @@ func (f *DataDirectory) Permissions() (*Acl, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 	var m map[string]interface{}
 	err = getJson(resp, &m)
 	if err != nil {
@@ -161,6 +165,7 @@ func (f *DataDirectory) UpdatePermissions(acl *Acl) error {
 	if err != nil {
 		return err
 	}
+	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
 		return errorFromResponse(resp)
 	}
@@ -185,60 +190,63 @@ func (f *DataDirectory) subObjects(filter DataObjectType) <-chan SubobjectResult
 		marker := ""
 		defer close(ch)
 		for first || marker != "" {
-			first = false
-			queryParams := url.Values{}
-			if marker != "" {
-				queryParams.Add("marker", marker)
-			}
-			resp, err := f.client.getHelper(f.url, queryParams)
-			if err != nil {
-				ch <- SubobjectResult{nil, err}
-				return
-			}
-
-			if resp.StatusCode != http.StatusOK {
-				ch <- SubobjectResult{nil, errorFromResponse(resp)}
-				return
-			}
-
-			var content contentResponse
-			if err := getJson(resp, &content); err != nil {
-				ch <- SubobjectResult{nil, err}
-				return
-			}
-
-			marker = content.Marker
-
-			getFiles := func() {
-				if content.Files == nil {
+			func() {
+				first = false
+				queryParams := url.Values{}
+				if marker != "" {
+					queryParams.Add("marker", marker)
+				}
+				resp, err := f.client.getHelper(f.url, queryParams)
+				if err != nil {
+					ch <- SubobjectResult{nil, err}
 					return
 				}
-				for _, fa := range content.Files {
-					file := NewDataFile(f.client, PathJoin(f.path, fa.FileName))
-					file.SetAttributes(fa)
-					ch <- SubobjectResult{file, nil}
-				}
-			}
-			getDirs := func() {
-				if content.Folders == nil {
+				defer resp.Body.Close()
+
+				if resp.StatusCode != http.StatusOK {
+					ch <- SubobjectResult{nil, errorFromResponse(resp)}
 					return
 				}
-				for _, fa := range content.Folders {
-					dir := NewDataDirectory(f.client, PathJoin(f.path, fa.Name))
-					dir.SetAttributes(fa)
-					ch <- SubobjectResult{dir, nil}
-				}
-			}
 
-			switch filter {
-			case File:
-				getFiles()
-			case Directory:
-				getDirs()
-			default:
-				getDirs()
-				getFiles()
-			}
+				var content contentResponse
+				if err := getJson(resp, &content); err != nil {
+					ch <- SubobjectResult{nil, err}
+					return
+				}
+
+				marker = content.Marker
+
+				getFiles := func() {
+					if content.Files == nil {
+						return
+					}
+					for _, fa := range content.Files {
+						file := NewDataFile(f.client, PathJoin(f.path, fa.FileName))
+						file.SetAttributes(fa)
+						ch <- SubobjectResult{file, nil}
+					}
+				}
+				getDirs := func() {
+					if content.Folders == nil {
+						return
+					}
+					for _, fa := range content.Folders {
+						dir := NewDataDirectory(f.client, PathJoin(f.path, fa.Name))
+						dir.SetAttributes(fa)
+						ch <- SubobjectResult{dir, nil}
+					}
+				}
+
+				switch filter {
+				case File:
+					getFiles()
+				case Directory:
+					getDirs()
+				default:
+					getDirs()
+					getFiles()
+				}
+			}()
 		}
 	}()
 
