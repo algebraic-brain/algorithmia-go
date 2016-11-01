@@ -208,6 +208,6 @@ go test -v
 To run particular test:
 ```bash
 export ALGORITHMIA_API_KEY={{Your API key here}}
-cd test -v
+cd test
 go test datadirlarge_test.go -v
 ```
