@@ -28,4 +28,6 @@ type DataObject interface {
 	IsFile() bool         //Returns whether object is a file
 	IsDir() bool          //Returns whether object is a directory
 	Type() DataObjectType //Returns type of this DataObject
+	Path() string
+	Url() string
 }

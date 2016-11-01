@@ -125,12 +125,14 @@ Download files by calling `StringContents`, `Bytes`, `Json`, or `File` on a `Dat
 foo := client.Dir("data://.my/foo")
 sampleText, _ := foo.File("sample.txt").StringContents() //string object
 fmt.Println(sampleText)                                  //"sample text contents"
+
 binaryContent, _ := foo.File("binary_file").Bytes()      //binary data
 fmt.Println(string(binaryContent))                       //"Hello"
+
 tempFile, _ := foo.File("binary_file").File()            //Open file descriptor for read
 defer tempFile.Close()
 binaryContent, _ = ioutil.ReadAll(tempFile)
-fmt.Println(string(binaryContent)) //"Hello"
+fmt.Println(string(binaryContent))                       //"Hello"
 ```
 
 ### Delete files and directories
@@ -142,4 +144,70 @@ DataDirectories have `ForceDelete` method that deletes the directory even it con
 foo := client.Dir("data://.my/foo")
 foo.File("sample.txt").Delete()
 foo.ForceDelete() // force deleting the directory and its contents
+```
+
+### List directory contents
+
+Iterate over the contents of a directory using the channel returned by calling `List`, `Files`, or `Dirs`
+on a `DataDirectory` object:
+
+```Go
+foo := client.Dir("data://.my/foo")
+
+// List files in "foo"
+for entry := range foo.Files() {
+	if entry.Err == nil {
+		file := entry.Object.(*algorithmia.DataFile)
+		fmt.Println(file.Path(), "at URL:", file.Url(), "last modified:", file.LastModified())
+	}
+}
+
+// List directories in "foo"
+for entry := range foo.Dirs() {
+	if entry.Err == nil {
+		dir := entry.Object.(*algorithmia.DataDirectory)
+		fmt.Println(dir.Path(), "at URL:", dir.Url())
+	}
+}
+
+// List everything in "foo"
+for entry := range foo.List() {
+	if entry.Err == nil {
+		fmt.Println(entry.Object.Path(), "at URL:", entry.Object.Url())
+	}
+}
+```
+
+### Manage directory permissions
+
+Directory permissions may be set when creating a directory, or may be updated on already existing directories.
+
+```Go
+foo := client.Dir("data://.my/foo")
+
+//ReadAclPublic is a wrapper for &Acl{AclTypePublic} to make things easier
+foo.Create(algorithmia.ReadAclPublic)
+
+acl, _ := foo.Permissions()                             //Acl object
+fmt.Println(acl.ReadAcl() == algorithmia.AclTypePublic) //true
+
+foo.UpdatePermissions(algorithmia.ReadAclPrivate)
+acl, _ = foo.Permissions()                               //Acl object
+fmt.Println(acl.ReadAcl() == algorithmia.AclTypePrivate) //true
+```
+
+## Running tests
+
+To run all test files:
+```bash
+export ALGORITHMIA_API_KEY={{Your API key here}}
+cd test
+go test
+```
+
+To run particular test:
+```bash
+export ALGORITHMIA_API_KEY={{Your API key here}}
+cd test
+go test datadirlarge_test.go -v
 ```

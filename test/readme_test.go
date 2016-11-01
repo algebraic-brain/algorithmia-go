@@ -9,6 +9,10 @@ import (
 	algorithmia "github.com/algebraic-brain/algorithmia-go"
 )
 
+/*
+Here we just check that README.md examples have no comilation errors and do not panic
+*/
+
 var apiKey = os.Getenv("ALGORITHMIA_API_KEY")
 var client = algorithmia.NewClient(apiKey, "")
 
@@ -64,6 +68,47 @@ func Test6(t *testing.T) {
 
 func Test7(t *testing.T) {
 	foo := client.Dir("data://.my/foo")
+
+	// List files in "foo"
+	for entry := range foo.Files() {
+		if entry.Err == nil {
+			file := entry.Object.(*algorithmia.DataFile)
+			fmt.Println(file.Path(), "at URL:", file.Url(), "last modified:", file.LastModified())
+		}
+	}
+
+	// List directories in "foo"
+	for entry := range foo.Dirs() {
+		if entry.Err == nil {
+			dir := entry.Object.(*algorithmia.DataDirectory)
+			fmt.Println(dir.Path(), "at URL:", dir.Url())
+		}
+	}
+
+	// List everything in "foo"
+	for entry := range foo.List() {
+		if entry.Err == nil {
+			fmt.Println(entry.Object.Path(), "at URL:", entry.Object.Url())
+		}
+	}
+}
+
+func Test8(t *testing.T) {
+	foo := client.Dir("data://.my/foo")
 	foo.File("sample.txt").Delete()
 	foo.ForceDelete() // force deleting the directory and its contents
+}
+
+func Test9(t *testing.T) {
+	foo := client.Dir("data://.my/foo")
+
+	//ReadAclPublic is a wrapper for &Acl{AclTypePublic} to make things easier
+	foo.Create(algorithmia.ReadAclPublic)
+
+	acl, _ := foo.Permissions()                             //Acl object
+	fmt.Println(acl.ReadAcl() == algorithmia.AclTypePublic) //true
+
+	foo.UpdatePermissions(algorithmia.ReadAclPrivate)
+	acl, _ = foo.Permissions()                               //Acl object
+	fmt.Println(acl.ReadAcl() == algorithmia.AclTypePrivate) //true
 }

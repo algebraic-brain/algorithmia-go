@@ -178,7 +178,7 @@ type SubobjectResult struct {
 	Err    error
 }
 
-func (f *DataDirectory) subObjects(filter DataObject) <-chan SubobjectResult {
+func (f *DataDirectory) subObjects(filter DataObjectType) <-chan SubobjectResult {
 	ch := make(chan SubobjectResult)
 	go func() {
 		first := true
