@@ -202,12 +202,12 @@ To run all test files:
 ```bash
 export ALGORITHMIA_API_KEY={{Your API key here}}
 cd test
-go test
+go test -v
 ```
 
 To run particular test:
 ```bash
 export ALGORITHMIA_API_KEY={{Your API key here}}
-cd test
+cd test -v
 go test datadirlarge_test.go -v
 ```
