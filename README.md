@@ -97,7 +97,49 @@ algo.SetOptions(algorithmia.AlgoOptions{Timeout: 60, Stdout: false})
 ```
 
 ## Working with data
-The Algorithmia client also provides a way to manage both Algorithmia hosted data
-and data from Dropbox or S3 accounts that you've connected to you Algorithmia account.
 
-TODO
+### Create directories
+Create directories by instantiating a `DataDirectory` object and calling `Create`:
+
+```Go
+client.Dir("data://.my/foo").Create(nil) //nil for default access control (private)
+```
+
+### Upload files to a directory
+
+Upload files by calling `Put` on a `DataFile` object.
+
+```Go
+foo := client.Dir("data://.my/foo")
+foo.File("sample.txt").Put("sample text contents")
+foo.File("binary_file").Put([]byte{72, 101, 108, 108, 111})
+```
+
+Note: you can instantiate a `DataFile` by either `client.File(filepath)` or `client.Dir(path).File(filename)`
+
+### Download contents of file
+
+Download files by calling `StringContents`, `Bytes`, `Json`, or `File` on a `DataFile` object:
+
+```Go
+foo := client.Dir("data://.my/foo")
+sampleText, _ := foo.File("sample.txt").StringContents() //string object
+fmt.Println(sampleText)                                  //"sample text contents"
+binaryContent, _ := foo.File("binary_file").Bytes()      //binary data
+fmt.Println(string(binaryContent))                       //"Hello"
+tempFile, _ := foo.File("binary_file").File()            //Open file descriptor for read
+defer tempFile.Close()
+binaryContent, _ = ioutil.ReadAll(tempFile)
+fmt.Println(string(binaryContent)) //"Hello"
+```
+
+### Delete files and directories
+
+Delete files and directories by calling `Delete` on their respective `DataFile` or `DataDirectory` object.
+DataDirectories have `ForceDelete` method that deletes the directory even it contains files or other directories.
+
+```Go
+foo := client.Dir("data://.my/foo")
+foo.File("sample.txt").Delete()
+foo.ForceDelete() // force deleting the directory and its contents
+```
