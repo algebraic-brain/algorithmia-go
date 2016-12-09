@@ -3,7 +3,7 @@ Algorithmia Common Library (Golang)
 
 Golang client library for accessing the [Algorithmia API](http://docs.algorithmia.com/#api-specification).
 
-For detailed library documentation, see the [Godoc](https://godoc.org/github.com/algebraic-brain/algorithmia-go).
+For detailed library documentation, see the [Godoc](https://godoc.org/github.com/algorithmiaio/algorithmia-go).
 
 ## Table Of Contents
   * [Install](#install)
