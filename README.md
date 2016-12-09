@@ -26,7 +26,7 @@ For detailed library documentation, see the [Godoc](https://godoc.org/github.com
 ## Install
 
 ```bash
-go get github.com/algebraic-brain/algorithmia-go
+go get github.com/algorithmiaio/algorithmia-go
 ```
 
 
@@ -36,7 +36,7 @@ First, create an Algorithmia client and authenticate with your API key:
 
 ```Go
 import (
-	algorithmia "github.com/algebraic-brain/algorithmia-go"
+	algorithmia "github.com/algorithmiaio/algorithmia-go"
 )
 
 var apiKey = "{{Your API key here}}"
@@ -229,3 +229,7 @@ export ALGORITHMIA_API_KEY={{Your API key here}}
 cd test
 go test datadirlarge_test.go -v
 ```
+
+## Credits
+
+Many thanks to Osman Bineev ([algebraic-brain](https://github.com/algebraic-brain)) for fully implementing the Algorithmia client spec in Go. This repo is an officially supported fork of [his implementation](https://github.com/algebraic-brain/algorithmia-go).
